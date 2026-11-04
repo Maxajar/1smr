@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sistemas Informáticos · Unidad 1</title>
+<style>
+:root{--bg:#120f21;--panel:#1b1830;--panel2:#25213f;--line:#38325c;--text:#f4f1ff;--muted:#aaa4cc;--pri:#9b8cff;--amber:#ffc857;--good:#4fd6a0;--bad:#ff6b81;--c:#9b8cff;--mono:ui-monospace,"SF Mono",Consolas,Menlo,monospace}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;background:radial-gradient(900px 500px at 85% -5%,#3a2a7a55,transparent 60%),radial-gradient(700px 500px at -5% 40%,#0e4a6644,transparent 60%),var(--bg)}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(#ffffff12 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+button,select{font:inherit}button{cursor:pointer;border:0;color:inherit;transition:transform .12s,filter .12s,background .12s}
+button:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-2px)}button:disabled{opacity:.4;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.wrap{position:relative;max-width:1040px;margin:auto;padding:20px 16px 50px}
+.hide{display:none!important}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.brand{font-weight:900;font-size:18px;display:flex;align-items:center;gap:10px}
+.brand i{font-style:normal;display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--pri),#5cc8ff);font-size:19px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:7px 13px;border-radius:30px;background:var(--panel);border:1px solid var(--line);font-size:13px;color:var(--muted)}.pill b{color:var(--text);font-size:15px}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:26px;align-items:center;padding:30px;border-radius:26px;background:linear-gradient(135deg,#2c2063,#1b1830 65%);border:1px solid #4a3f8a}
+.hero h1{font-size:clamp(32px,5.5vw,50px);line-height:1.04;margin:0 0 12px;font-weight:900;letter-spacing:-1px}
+.hero p{color:#cfc9ee;line-height:1.6;margin:0;max-width:46ch}
+.bits{background:#0f0c1e;border:1px solid var(--line);border-radius:20px;padding:18px;text-align:center}
+.bitrow{display:flex;gap:6px;justify-content:center}
+.bit{flex:1;max-width:52px;padding:0;background:none}
+.bit small{display:block;font:600 11px var(--mono);color:var(--muted);margin-bottom:5px}
+.bit span{display:grid;place-items:center;aspect-ratio:.8;border-radius:11px;background:var(--panel2);border:1px solid var(--line);font:800 22px var(--mono);color:#6e6899}
+.bit.on span{background:var(--amber);border-color:var(--amber);color:#2a1d00;box-shadow:0 0 18px #ffc85766}
+.bitout{margin-top:14px;font:700 15px var(--mono);color:var(--muted)}.bitout b{color:var(--amber);font-size:26px}
+.bitnote{font-size:12px;color:var(--muted);margin-top:6px}
+h2.sec{font-size:20px;margin:30px 0 4px;font-weight:850}
+.sub{margin:0 0 12px;color:var(--muted);font-size:13.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.mode{display:flex;gap:14px;text-align:left;padding:16px;border-radius:18px;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--c);align-items:flex-start}
+.mode .ico{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;font-size:23px;background:color-mix(in srgb,var(--c) 22%,transparent)}
+.mode h3{margin:0 0 4px;font-size:16px}.mode p{margin:0;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.mode.wide{grid-column:1/-1;background:linear-gradient(120deg,color-mix(in srgb,var(--c) 28%,var(--panel)),var(--panel))}
+.map{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:7px 12px;border-radius:30px;font-size:13px;font-weight:700;background:color-mix(in srgb,var(--c) 18%,transparent);border:1px solid color-mix(in srgb,var(--c) 55%,transparent)}
+.panel{margin-top:6px;padding:24px;border-radius:24px;background:var(--panel);border:1px solid var(--line)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.panel h2{margin:4px 0;font-size:24px}
+.btn{padding:12px 18px;border-radius:13px;font-weight:800}
+.primary{background:var(--amber);color:#2a1d00}.secondary{background:var(--panel2);border:1px solid var(--line)}
+.quiet{background:transparent;color:var(--muted);border:1px solid var(--line)}.danger{background:#4a2240;color:#ffd9e3}
+.tag{display:inline-block;padding:5px 12px;border-radius:30px;font-size:12.5px;font-weight:800;background:color-mix(in srgb,var(--c) 22%,transparent);border:1px solid color-mix(in srgb,var(--c) 60%,transparent)}
+.bar{height:10px;border-radius:20px;background:#0f0c1e;overflow:hidden;margin:14px 0}
+.bar>div{height:100%;width:0;border-radius:20px;background:var(--c);transition:width .3s}
+.question{font-size:clamp(21px,3.6vw,29px);line-height:1.3;font-weight:850;margin:18px 0 20px}
+.answers{display:grid;gap:10px}
+.answer{display:flex;align-items:center;gap:12px;text-align:left;padding:14px;border-radius:15px;background:var(--panel2);border:2px solid var(--line);font-weight:650;line-height:1.4;font-size:15.5px}
+.answer .l{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#0f0c1e;color:var(--c);font:800 13px var(--mono)}
+.answer.correct{border-color:var(--good);background:#143a35}.answer.correct .l{background:var(--good);color:#04251b}
+.answer.wrong{border-color:var(--bad);background:#40203a}.answer.wrong .l{background:var(--bad);color:#2b0610}
+.feedback{display:none;margin-top:14px;padding:14px 16px;border-radius:14px;line-height:1.55}
+.feedback.good{display:block;background:#143a35;border:1px solid #2f8a6c}.feedback.bad{display:block;background:#3d1f38;border:1px solid #a14c68}
+.actions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.small{font-size:12.5px;color:var(--muted)}.streak{color:var(--amber);font-weight:800}
+.timer{font:800 20px var(--mono);color:var(--amber)}.timer.warn{color:var(--bad)}
+.card{margin-top:16px;padding:20px;border-radius:18px;background:var(--panel2);border:1px solid var(--line);border-top:4px solid var(--c)}
+.card h3{margin:0 0 8px;font-size:21px;color:var(--good)}.card p{margin:0;line-height:1.65;color:#ddd8f5}
+.ghost{display:grid;place-items:center;min-height:120px;margin-top:16px;border-radius:18px;border:2px dashed var(--line);color:var(--muted)}
+select{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px;max-width:100%}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:14px 0}
+.check{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:13.5px;border-left:4px solid var(--c);cursor:pointer}
+.check input{accent-color:var(--c);width:17px;height:17px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:16px 0}
+.metric{padding:14px;border-radius:15px;background:var(--panel2);border:1px solid var(--line)}.metric strong{display:block;font-size:27px}.metric span{font-size:12.5px;color:var(--muted)}
+.result{text-align:center}
+.ring{--p:0;width:170px;height:170px;margin:12px auto;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--good) calc(var(--p)*1%),#0f0c1e 0)}
+.ring div{width:134px;height:134px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:34px;font-weight:900}
+.stat{padding:12px 0;border-bottom:1px solid var(--line)}.stat:last-child{border:0}.stat .bar{height:8px;margin:8px 0 0}
+.rev{padding:14px;margin:10px 0;border-radius:14px;background:var(--panel2);border:1px solid var(--line);text-align:left;line-height:1.5}.rev p{margin:6px 0 0}
+.muted{color:var(--muted)}.foot{text-align:center;color:#7d77a3;font-size:12px;margin-top:26px}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding:22px}}
+@media(max-width:520px){.panel{padding:18px}.bit span{font-size:18px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+
+
+#intro{position:fixed;inset:0;z-index:100;display:grid;place-content:center;justify-items:center;gap:22px;overflow:hidden;cursor:pointer;background:radial-gradient(760px 460px at 50% 46%,#3a2a7acc,transparent 70%),var(--bg)}
+#intro.out{animation:outro .95s cubic-bezier(.65,0,.35,1) forwards;pointer-events:none}
+@keyframes outro{to{opacity:0;transform:scale(1.12);filter:blur(12px);visibility:hidden}}
+#rain{position:absolute;inset:0;width:100%;height:100%;opacity:0;animation:rainin 1.6s ease forwards}
+@keyframes rainin{to{opacity:.5}}
+.in-name,.in-line,.in-sub,.in-load,.in-skip{position:relative}
+.in-name{display:flex;justify-content:center;font:900 clamp(46px,13vw,120px)/1.05 ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;letter-spacing:-.02em;filter:drop-shadow(0 0 24px #ffc85755)}
+.L{position:relative;display:inline-block;min-width:.5em;text-align:center}
+.L .g{display:block;opacity:0;background-image:linear-gradient(105deg,#ffc857 42%,#fff 50%,#ffc857 58%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+animation:glyph 1s cubic-bezier(.22,1,.36,1) forwards,shine 1.3s cubic-bezier(.45,0,.2,1) both;animation-delay:calc(1.15s + var(--i)*.12s),calc(2.7s + var(--i)*.08s)}
+.L .b{position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(11px,2.5vw,17px)/1.45 var(--mono);color:#a79eff;white-space:pre;letter-spacing:0;opacity:0;animation:bin 1.6s ease-in-out forwards;animation-delay:calc(.25s + var(--i)*.1s)}
+@keyframes bin{0%{opacity:0;transform:translateY(14px)}28%{opacity:1;transform:none}62%{opacity:1;filter:blur(0)}100%{opacity:0;transform:translateY(-10px);filter:blur(8px)}}
+@keyframes glyph{from{opacity:0;filter:blur(16px);transform:translateY(.3em) scale(.86)}to{opacity:1;filter:blur(0);transform:none}}
+@keyframes shine{from{background-position:0 0}to{background-position:100% 0}}
+.in-line{height:3px;width:min(520px,72vw);border-radius:3px;background:linear-gradient(90deg,transparent,var(--pri),#5cc8ff,var(--amber),transparent);transform:scaleX(0);opacity:0;animation:line 1.1s cubic-bezier(.22,1,.36,1) 2.4s forwards}
+@keyframes line{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
+.in-sub{font-weight:700;color:#d6d1f5;font-size:clamp(13px,2.6vw,18px);opacity:0;animation:rise .9s cubic-bezier(.22,1,.36,1) 2.7s forwards}
+.in-load{width:min(260px,60vw);height:5px;border-radius:9px;background:#0f0c1e;overflow:hidden;opacity:0;animation:rise .8s ease 2.9s forwards}
+.in-load i{display:block;height:100%;width:100%;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--pri),#5cc8ff,var(--amber));animation:fill 1.9s cubic-bezier(.45,0,.25,1) 3s forwards}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fill{to{transform:none}}
+.in-skip{position:absolute;bottom:22px;font-size:12px;color:#8b85b3;opacity:0;animation:rise .8s ease 1s forwards}
+</style></head>
+<body><div id="intro" role="presentation"><canvas id="rain"></canvas><div class="in-name" id="inName" aria-label="Maximo.H"></div><div class="in-line"></div><div class="in-sub">Sistemas Informáticos, Unidad 1</div><div class="in-load"><i></i></div><div class="in-skip">Toca para saltar</div></div>
+<div class="wrap">
+<header class="top"><div class="brand"><i>💾</i>Sistemas Informáticos <span class="muted" style="font-weight:600">Unidad 1</span></div>
+<div class="pills"><div class="pill">Preguntas <b id="bankCount">0</b></div><div class="pill">Aciertos <b id="totalCorrect">0</b></div><div class="pill">Precisión <b id="overallAccuracy">—</b></div></div></header>
+
+<section id="home">
+<div class="hero"><div><h1>Aprende cómo piensa un ordenador.</h1><p>Estudia cada tema, practica con preguntas tipo test y haz simulacros cronometrados. Tu progreso se guarda en este navegador.</p></div>
+<div class="bits"><div class="bitrow" id="bitrow"></div><div class="bitout" id="bitout"></div><div class="bitnote">Toca los bits para encenderlos o apagarlos</div></div></div>
+
+<h2 class="sec">Estudiar</h2><p class="sub">Sin puntuación, a tu ritmo.</p>
+<div class="grid">
+<button class="mode" style="--c:#9b8cff" onclick="openStudy()"><span class="ico">📖</span><span><h3>Estudio por temas</h3><p>Tarjetas: piensa la respuesta y compruébala con su explicación.</p></span></button>
+<button class="mode" style="--c:#5cc8ff" onclick="startDefinitions()"><span class="ico">🔎</span><span><h3>Repaso de conceptos</h3><p>15 preguntas variadas para reconocer la respuesta correcta.</p></span></button></div>
+
+<h2 class="sec">Practicar</h2><p class="sub">Responde y aprende de cada fallo al momento.</p>
+<div class="grid">
+<button class="mode" style="--c:#4fd6a0" onclick="openTopicPractice()"><span class="ico">📚</span><span><h3>Práctica por temas</h3><p>Elige uno o varios apartados.</p></span></button>
+<button class="mode" style="--c:#ffc857" onclick="startQuick(5)"><span class="ico">⚡</span><span><h3>Repaso rápido de 5</h3><p>Una ronda breve.</p></span></button>
+<button class="mode" style="--c:#ffc857" onclick="startQuick(10)"><span class="ico">📝</span><span><h3>Repaso rápido de 10</h3><p>Unos minutos y listo.</p></span></button>
+<button class="mode" style="--c:#ffc857" onclick="startQuick(15)"><span class="ico">📋</span><span><h3>Repaso rápido de 15</h3><p>Una ronda más completa.</p></span></button>
+<button class="mode" style="--c:#ff6b81" onclick="startMistakes()"><span class="ico">↻</span><span><h3>Repasar errores</h3><p>Las que has fallado, incluso de sesiones anteriores.</p></span></button>
+<button class="mode" style="--c:#ff8fab" onclick="startSmartReview()"><span class="ico">🧠</span><span><h3>Repaso inteligente</h3><p>Prioriza las falladas o sin responder.</p></span></button></div>
+
+<h2 class="sec">Evaluarte</h2><p class="sub">Para saber cómo vas de verdad.</p>
+<div class="grid">
+<button class="mode wide" style="--c:#9b8cff" onclick="startFinalExam()"><span class="ico">🎓</span><span><h3>Examen final</h3><p>30 preguntas, 30 minutos, nota sobre 10 y revisión de fallos al terminar.</p></span></button>
+<button class="mode" style="--c:#5cc8ff" onclick="openCustomExam()"><span class="ico">⚙️</span><span><h3>Simulacro personalizado</h3><p>Elige temas y número de preguntas.</p></span></button>
+<button class="mode" style="--c:#4fd6a0" onclick="openProgress()"><span class="ico">📊</span><span><h3>Tu progreso</h3><p>Precisión por tema y preguntas pendientes.</p></span></button></div>
+
+<h2 class="sec">Los temas</h2><p class="sub">Cada color agrupa temas relacionados.</p><div class="map" id="map"></div>
+</section>
+
+<section id="study" class="panel hide"><div class="row"><h2>Tarjetas de estudio</h2><button class="btn quiet" onclick="showHome()">Menú</button></div>
+<div class="row" style="margin-top:12px"><label class="field">Tema<select id="studyTopic"></select></label><span class="tag" id="studyTag"></span></div>
+<div class="bar"><div id="studyProgress"></div></div><div class="small" id="studyPosition"></div>
+<h2 class="question" id="studyQuestion"></h2>
+<div class="ghost" id="studyGhost"><button class="btn primary" onclick="reveal()">Ver respuesta</button></div>
+<div class="card hide" id="studyCard"><h3 id="studyAnswer"></h3><p id="studyExplanation"></p></div>
+<div class="actions"><button class="btn secondary" onclick="studyPrev()">Anterior</button><button class="btn primary" onclick="studyNext()">Siguiente</button></div>
+<div class="actions"><button class="btn secondary" onclick="practiceStudyTopic()">Practicar este tema</button><span class="small">Atajos: ← → y Espacio</span></div></section>
+
+<section id="setup" class="panel hide"><div class="row"><div><h2 id="setupTitle">Elige tus opciones</h2><p class="muted" id="setupDescription" style="margin:4px 0 0"></p></div><button class="btn quiet" onclick="showHome()">Menú</button></div>
+<div class="row" style="margin-top:16px"><label class="field">Número de preguntas<select id="customCount"><option value="5">5 preguntas</option><option value="10">10 preguntas</option><option value="15">15 preguntas</option><option value="20">20 preguntas</option><option value="all">Todas las seleccionadas</option></select></label><span><button class="btn quiet" onclick="toggleTopics(true)">Todos</button> <button class="btn quiet" onclick="toggleTopics(false)">Ninguno</button></span></div>
+<div id="topicChecks" class="checks"></div><div class="actions"><span class="small" id="selectedInfo"></span><button class="btn primary" onclick="launchCustom()">Empezar</button></div></section>
+
+<section id="quiz" class="panel hide"><div class="row"><div><span class="small" id="quizMode"></span><br><span class="tag" id="quizTopic"></span></div>
+<div style="text-align:right"><div class="small" id="quizCounter"></div><div class="streak" id="streak"></div><div id="timer" class="timer hide">30:00</div></div></div>
+<div class="bar"><div id="quizProgress"></div></div><h2 class="question" id="quizQuestion"></h2><div class="answers" id="quizAnswers"></div><div id="quizFeedback" class="feedback"></div>
+<div class="actions"><span class="small" id="quizHint"></span><button id="quizNext" class="btn primary" disabled onclick="nextQuestion()">Siguiente</button></div>
+<div class="actions"><button class="btn quiet" onclick="confirmExit()">Salir</button><span class="small">Atajos: 1–4 o A–D, Intro para seguir</span></div></section>
+
+<section id="results" class="panel hide"><div class="result"><h2 id="resultTitle"></h2><div class="ring" id="ring"><div id="resultScore"></div></div><p class="muted" id="resultText"></p>
+<div class="metrics"><div class="metric"><strong id="resultCorrect">0</strong><span>Correctas</span></div><div class="metric"><strong id="resultWrong">0</strong><span>Incorrectas</span></div><div class="metric"><strong id="resultPercent">0%</strong><span>Precisión</span></div><div class="metric" id="gradeMetric"><strong id="resultGrade">—</strong><span>Nota sobre 10</span></div></div>
+<div class="actions" style="justify-content:center"><button class="btn primary" onclick="showHome()">Volver al menú</button><button class="btn secondary" onclick="repeatLast()">Repetir</button></div></div><div id="resultReview"></div></section>
+
+<section id="progress" class="panel hide"><div class="row"><h2>Tu progreso</h2><button class="btn quiet" onclick="showHome()">Menú</button></div>
+<div class="metrics"><div class="metric"><strong id="statAnswered">0</strong><span>Respuestas</span></div><div class="metric"><strong id="statCorrect">0</strong><span>Aciertos</span></div><div class="metric"><strong id="statAccuracy">0%</strong><span>Precisión</span></div><div class="metric"><strong id="statMastered">0</strong><span>Temas dominados</span></div></div>
+<h3>Resultados por tema</h3><div id="topicProgress"></div><h3 style="margin-top:22px">Pendientes de repasar</h3><div id="pendingReview" class="muted"></div>
+<div class="actions"><button class="btn danger" onclick="resetProgress()">Borrar progreso</button></div></section>
+<div class="foot">Funciona sin conexión. El progreso se guarda en este dispositivo.</div></div>
+<script>
+const BANK = [["Conceptos básicos", "La palabra «informática» nace de la unión de…", ["información + automática", "informe + matemática", "internet + automática", "información + mecánica"], 0, "INFORmación + autoMÁTICA: tratamiento automático de la información."],
+["Historia", "Ordena de más antiguo a más reciente: Turing, ENIAC, Intel 4004, Macintosh.", ["Turing (1936), ENIAC, Intel 4004, Macintosh (1984)", "ENIAC, Turing, Macintosh, Intel 4004", "Macintosh, Intel 4004, ENIAC, Turing", "Turing, Intel 4004, ENIAC, Macintosh"], 0, "1936 → 1945 → principios de los 70 → 1984."],
+["Historia", "¿Qué modelo teórico puede simular cualquier algoritmo?", ["La máquina de Turing", "La máquina analítica de Babbage", "El Altair 8800", "El ENIAC"], 0, "La máquina de Turing (1936) es un modelo teórico de computadora."],
+["Historia", "La máquina analítica de Babbage (1837-1871) era de…", ["cálculo de propósito general", "uso exclusivamente militar", "comunicación por red", "tratamiento de imágenes"], 0, "Se diseñó como máquina de cálculo de propósito general."],
+["Historia", "¿Para qué se construyó el ENIAC según el resumen?", ["Calcular trayectorias de armamento", "Gestionar nóminas bancarias", "Jugar y entretener", "Conectar ordenadores en red"], 0, "Era totalmente digital, con tubos de vacío."],
+["Historia", "¿Qué sustituyó a los tubos de vacío entre 1950 y 1960?", ["Los transistores", "Los microprocesadores", "Los disquetes", "Los discos ZIP"], 0, "Los transistores hicieron los equipos más pequeños y fiables."],
+["Historia", "¿Qué empresa creó el primer microprocesador, el 4004?", ["Intel", "Apple", "IBM", "Microsoft"], 0, "Intel lo presentó a principios de los años 70."],
+["Historia", "¿Qué le faltaba al Altair 8800, el primer PC de mediados de los 70?", ["Monitor, teclado y ratón", "Procesador", "Memoria", "Corriente eléctrica"], 0, "Se manejaba sin ninguno de esos periféricos."],
+["Historia", "¿Qué presentó Steve Jobs el 24 de enero de 1984?", ["El Macintosh", "El Altair 8800", "El ENIAC", "El Intel 4004"], 0, "Interfaz gráfica, ratón, monitor de 9\", 128 KB y disquetera de 3,5\"."],
+["Historia", "¿Qué disquetera y memoria tenía el primer Macintosh?", ["3,5 pulgadas y 128 KB", "5,25 pulgadas y 1 MB", "3,5 pulgadas y 128 MB", "Sin disquetera y 640 KB"], 0, "Costaba 2.495 $."],
+["Historia", "¿Qué primeros programas incluyó el Macintosh?", ["MacPaint y MacWrite", "Word y Excel", "Paint y Notepad", "Photoshop y Writer"], 0, "Fueron obra de Bill Atkinson."],
+["Conceptos básicos", "Verdadero o falso: El hardware incluye los programas y las aplicaciones.", ["Verdadero", "Falso"], 1, "Eso es software. El hardware es la parte física."],
+["Conceptos básicos", "Verdadero o falso: El software es la parte lógica del sistema informático.", ["Verdadero", "Falso"], 0, "Programas y datos: lo que no se puede tocar."],
+["Conceptos básicos", "Un monitor, un cable USB y un teclado son…", ["hardware", "software", "firmware", "documentación"], 0, "Son componentes físicos."],
+["Tipos de ordenadores", "¿Cuál es la característica principal de un superordenador?", ["Cálculo a gran velocidad y precio muy alto", "Bajo coste y portabilidad", "Solo funciona en red", "Pantalla táctil"], 0, "Muchos son varios ordenadores de alto rendimiento en paralelo."],
+["Tipos de ordenadores", "Una biblioteca con equipos sin almacenamiento, solo para trabajar en red, usa…", ["NC / PC-NET / PC-WEB", "Superordenadores", "Nanoordenadores", "PDA"], 0, "Son de bajo coste y dependen de la red."],
+["Tipos de ordenadores", "Las consolas se clasifican como…", ["nanoordenadores", "superordenadores", "microordenadores", "PDA"], 0, "Pocas funcionalidades, orientadas al entretenimiento."],
+["Tipos de ordenadores", "¿Qué es una PDA?", ["Un ordenador de mano con agenda electrónica y pantalla táctil", "Un ordenador de sobremesa", "Un tipo de impresora", "Un superordenador"], 0, "Normalmente sin teclado."],
+["Tipos de ordenadores", "¿Cuál es el tamaño de pantalla habitual de una tablet?", ["Entre 7 y 10 pulgadas", "Entre 1 y 3 pulgadas", "Entre 15 y 17 pulgadas", "Más de 20 pulgadas"], 0, "Procesador de bajo consumo y poca memoria."],
+["Tipos de ordenadores", "¿Cuál NO es un sistema operativo de smartphone citado en el resumen?", ["Linux Mint", "iOS", "Android", "Windows Phone"], 0, "Citados: iOS (Apple), Android (Google) y Windows Phone (Microsoft)."],
+["Tipos de ordenadores", "¿Qué diferencia a un portátil de un PC de sobremesa?", ["Todo integrado y batería para tener autonomía", "No tiene procesador", "Es más potente siempre", "Solo funciona conectado a la red"], 0, "Es transportable y autónomo."],
+["Periféricos", "Según su función, los periféricos se clasifican en…", ["entrada, salida y almacenamiento", "internos, externos y mixtos", "rápidos, medios y lentos", "analógicos y digitales"], 0, "Según su ubicación son internos o externos."],
+["Periféricos", "¿Qué periférico es de entrada y salida a la vez?", ["El disco duro", "El teclado", "El monitor", "El micrófono"], 0, "Los de almacenamiento leen y escriben datos."],
+["Periféricos", "¿Cuál NO es un periférico de entrada?", ["Altavoces", "Teclado", "Escáner", "Micrófono"], 0, "Los altavoces son de salida."],
+["Periféricos", "¿Cuál NO es un periférico de salida?", ["Tableta digitalizadora", "Plotter", "Impresora", "Monitor"], 0, "La tableta digitalizadora introduce datos."],
+["Periféricos", "¿Qué ratón usa una bola inferior y es el más barato?", ["El mecánico", "El óptico", "El inalámbrico", "El táctil"], 0, "Es el menos usado y se ensucia."],
+["Periféricos", "¿Qué ventaja tiene el ratón óptico?", ["Evita la suciedad y es más preciso", "Funciona sin ordenador", "Usa bola inferior", "Es siempre inalámbrico"], 0, "Lleva sensor óptico y procesador digital de señal."],
+["Periféricos", "Un ratón inalámbrico del resumen se comunica por…", ["infrarrojos y funciona con pila", "cable USB", "bola", "conexión a la BIOS"], 0, "Se alimenta con pilas."],
+["Periféricos", "La resolución de un escáner se mide en…", ["ppp (puntos por pulgada)", "píxeles por segundo", "megabytes", "hercios"], 0, "La imagen se divide en puntos."],
+["Periféricos", "¿Qué hace un micrófono?", ["Convierte señales acústicas en corriente eléctrica", "Convierte corriente en sonido", "Imprime sonidos", "Guarda la BIOS"], 0, "Se usa en cursos de idiomas y multimedia."],
+["Periféricos", "¿Qué hace un altavoz?", ["Transforma la corriente eléctrica en sonido mediante un diafragma", "Captura sonido", "Digitaliza imágenes", "Almacena música"], 0, "Va conectado a la tarjeta de sonido."],
+["Periféricos", "1 pulgada equivale a…", ["2,54 cm", "10 cm", "1 cm", "25,4 cm"], 0, "El tamaño del monitor se mide en diagonal, entre vértices opuestos."],
+["Periféricos", "Un monitor de 800×600 tiene una resolución de…", ["800 píxeles horizontales por 600 verticales", "800 pulgadas por 600", "800 ppp", "800 hercios"], 0, "Resolución = píxeles horizontales × verticales."],
+["Periféricos", "¿Qué dispositivo usa un arquitecto para imprimir planos grandes con precisión?", ["Un plotter", "Una impresora matricial", "Un escáner", "Un micrófono"], 0, "Tipos: de planos o sábana, de tambor, electrostáticos y de chorro de tinta."],
+["Periféricos", "Las impresoras sin impacto son de…", ["chorro de tinta y láser", "matriz y margarita", "tambor y sábana", "ZIP y DVD"], 0, "Las de impacto golpean el papel."],
+["Almacenamiento", "Un pen drive se conecta al ordenador por…", ["USB", "la BIOS", "infrarrojos", "el bus de control"], 0, "Se detecta automáticamente y es del tamaño de un mechero."],
+["Almacenamiento", "¿Cuál de estos medios de almacenamiento es obsoleto según el resumen?", ["El disquete", "El disco duro", "El pen drive", "El DVD"], 0, "También el disco ZIP."],
+["Almacenamiento", "Un disquete se protege contra escritura…", ["desplazando la ficha cuadrada (orificio abierto)", "con una contraseña", "pulsando F2", "quitando la pila"], 0, "Orificio abierto = protegido."],
+["Almacenamiento", "¿Por qué el disco duro es mucho más rápido que un disquete?", ["Tiene varios platos rígidos que giran a más velocidad", "Es de plástico flexible", "Se conecta por infrarrojos", "Usa tubos de vacío"], 0, "Se aloja en una caja metálica y va conectado a la placa base."],
+["Almacenamiento", "¿Qué capacidad tiene un disquete?", ["Hasta 1,44 MB", "Hasta 700 MB", "De 4 a 17 GB", "De 100 a 750 MB"], 0, "Es de plástico flexible."],
+["Almacenamiento", "¿Qué soporte se usaba para copias de seguridad y necesitaba lector especial?", ["El disco ZIP", "El CD-ROM", "El disquete", "El pen drive"], 0, "Capacidad de 100 a 750 MB."],
+["Almacenamiento", "¿Qué soporte tiene unos 700 MB?", ["El CD", "El DVD", "El disquete", "El disco ZIP"], 0, "El DVD ronda 4-17 GB."],
+["Almacenamiento", "¿Por qué un DVD no se lee con el láser de un CD?", ["Necesita un láser distinto", "Es de plástico flexible", "Es magnético", "No es regrabable"], 0, "Ambos son más fiables que el disquete."],
+["Almacenamiento", "¿Por qué decimos que los periféricos de almacenamiento son de entrada y de salida?", ["Porque guardan datos y también los leen", "Porque imprimen y escanean", "Porque solo muestran información", "Porque calculan"], 0, "Se escribe en ellos y se lee de ellos."],
+["Datos y unidades", "1 byte son…", ["8 bits", "4 bits", "16 bits", "1024 bits"], 0, "Un carácter ocupa normalmente 1 byte."],
+["Datos y unidades", "¿Cuántos bits hay en 3 bytes?", ["24", "12", "30", "3.072"], 0, "3 × 8 = 24."],
+["Datos y unidades", "¿Cuántos bytes hay en 1 KB?", ["1024", "1000", "8", "100"], 0, "Cada unidad es 1024 veces la anterior."],
+["Datos y unidades", "¿Cuántos MB hay en 1 GB?", ["1024", "1000", "100", "8"], 0, "1 GB = 1024 MB."],
+["Datos y unidades", "¿Cuántos bytes hay en 2 KB?", ["2048", "2000", "1024", "16"], 0, "2 × 1024 = 2048."],
+["Datos y unidades", "Ordena de menor a mayor: GB, KB, TB, MB.", ["KB, MB, GB, TB", "KB, GB, MB, TB", "MB, KB, GB, TB", "TB, GB, MB, KB"], 0, "Después del TB viene el PB."],
+["Datos y unidades", "Un texto de 500 caracteres ocupa aproximadamente…", ["500 bytes", "500 bits", "500 KB", "500 MB"], 0, "Cada carácter ocupa normalmente 1 byte."],
+["Datos y unidades", "¿Cuál es la unidad mínima de información?", ["El bit", "El byte", "El KB", "El píxel"], 0, "Una cifra binaria: 0 o 1."],
+["Binario", "¿Qué número decimal es 00001101?", ["13", "11", "15", "9"], 0, "8 + 4 + 1 = 13."],
+["Binario", "¿Qué número decimal es 11001000?", ["200", "192", "208", "180"], 0, "128 + 64 + 8 = 200."],
+["Binario", "¿Qué número decimal es 00101101?", ["45", "43", "47", "37"], 0, "32 + 8 + 4 + 1 = 45."],
+["Binario", "¿Qué número decimal es 10000000?", ["128", "64", "256", "127"], 0, "Solo tiene activo el peso mayor."],
+["Binario", "¿Cuál es el valor decimal más alto de un octeto?", ["255", "256", "128", "127"], 0, "11111111 = 128+64+32+16+8+4+2+1."],
+["Binario", "¿Cómo se escribe 37 en binario (8 bits)?", ["00100101", "00100011", "00101001", "01000101"], 0, "32 + 4 + 1 = 37."],
+["Binario", "¿Cómo se escribe 100 en binario (8 bits)?", ["01100100", "01100010", "01010100", "01101000"], 0, "64 + 32 + 4 = 100."],
+["Binario", "¿Cómo se escribe 64 en binario (8 bits)?", ["01000000", "00100000", "10000000", "00001000"], 0, "Solo tiene activo el peso 64."],
+["Binario", "¿Cuántos pesos tiene un octeto y cuál es el menor?", ["8 pesos; el menor es 1", "8 pesos; el menor es 0", "7 pesos; el menor es 2", "10 pesos; el menor es 1"], 0, "Pesos: 128, 64, 32, 16, 8, 4, 2, 1."],
+["Binario", "Al pasar de decimal a binario dividiendo entre 2, el número binario se forma con…", ["el último cociente y los restos de abajo arriba", "los cocientes de arriba abajo", "solo los restos de arriba abajo", "los dobles de cada resto"], 0, "Se divide hasta que no se pueda más."],
+["Direcciones IP", "¿Cómo se escribe 192 en binario?", ["11000000", "10101100", "11100000", "10000001"], 0, "128 + 64 = 192."],
+["Direcciones IP", "¿Cómo se escribe 10.0.3.2 en binario?", ["00001010.00000000.00000011.00000010", "00001010.00000000.00000010.00000011", "00001001.00000000.00000011.00000010", "00001010.00000001.00000011.00000010"], 0, "10 = 00001010; 0; 3 = 00000011; 2 = 00000010."],
+["Direcciones IP", "¿Cómo se escribe 128.45.7.1 en binario?", ["10000000.00101101.00000111.00000001", "10000000.00101101.00000011.00000001", "10000000.00110101.00000111.00000001", "01000000.00101101.00000111.00000001"], 0, "128 = 10000000; 45 = 00101101; 7 = 00000111; 1 = 00000001."],
+["Direcciones IP", "¿A qué IP decimal equivale 10010111.00010111.00100000.00110010?", ["151.23.32.50", "151.23.32.52", "149.23.32.50", "151.21.32.50"], 0, "151, 23, 32 y 50."],
+["Direcciones IP", "¿A qué IP decimal equivale 00101111.00110010.00000011.00000010?", ["47.50.3.2", "47.50.3.4", "45.50.3.2", "47.52.3.2"], 0, "47, 50, 3 y 2."],
+["Direcciones IP", "¿A qué IP decimal equivale 00000100.01011010.01010000.01000110?", ["4.90.80.70", "4.90.80.68", "4.88.80.70", "4.90.82.70"], 0, "4, 90, 80 y 70."],
+["ASCII", "¿Qué es el código ASCII?", ["El código binario estándar para representar caracteres", "Un lenguaje de programación", "Un tipo de memoria", "Un periférico"], 0, "El ordenador solo entiende binario."],
+["ASCII", "Según el resumen, la letra S en ASCII es…", ["01010011 (83)", "01000001 (65)", "01010100 (84)", "00110011 (51)"], 0, "S = 01010011 = 83 en decimal."],
+["ASCII", "Si la S es 01010011, ¿cómo sería la T (siguiente letra)?", ["01010100", "01010010", "01010111", "00101010"], 0, "En ASCII las letras son consecutivas: 83 + 1 = 84."],
+["ASCII", "Al pulsar una tecla, ¿qué recorrido sigue la letra?", ["Teclado → procesador → monitor", "Monitor → teclado → procesador", "Procesador → teclado → monitor", "Teclado → monitor → procesador"], 0, "El teclado la envía al procesador y este la muestra en el monitor."],
+["Software", "El software comprende…", ["programas y documentación asociada", "solo los programas", "solo los datos", "los programas y los cables"], 0, "Documentación de diseño, manual de instalación y de uso."],
+["Software", "En el software, ¿qué suele costar más?", ["Mantenerlo que desarrollarlo", "Desarrollarlo que mantenerlo", "El hardware siempre", "Nada, es gratis"], 0, "El mantenimiento llega a costar varias veces el desarrollo."],
+["Software", "Un programa que una empresa crea para uso propio es un producto…", ["de desarrollo propio", "genérico", "a medida", "adaptado"], 0, "Lo hace la empresa que lo va a usar."],
+["Software", "Un software hecho para un único cliente es…", ["a medida (customizado)", "genérico", "de desarrollo propio", "de sistemas"], 0, "Los genéricos van para una amplia gama de clientes."],
+["Software", "¿Qué es un programa?", ["Un conjunto de instrucciones para un ordenador", "Un conjunto de aplicaciones", "Un tipo de memoria", "Un periférico"], 0, "Una aplicación puede estar formada por varios programas."],
+["Software", "Verdadero o falso: Una aplicación informática puede estar formada por varios programas.", ["Verdadero", "Falso"], 0, "Ejemplo: un programa bancario con nóminas, hipotecas y contabilidad."],
+["Software", "El software de sistemas se divide en…", ["de control (el S.O.) y de diagnóstico y mantenimiento", "de aplicación y de lenguajes", "genérico y a medida", "básico y propio"], 0, "Controla el ordenador."],
+["Software", "Los lenguajes de programación sirven para…", ["crear otros programas", "controlar el hardware", "imprimir documentos", "almacenar archivos"], 0, "Son un tipo de software."],
+["Sistemas operativos", "Un sistema operativo actúa como…", ["interfaz entre el usuario y el hardware", "periférico de entrada", "memoria auxiliar", "tipo de impresora"], 0, "Además controla los recursos de la máquina."],
+["Sistemas operativos", "Ordena las interfaces según su evolución.", ["CLI, GUI, NUI", "GUI, CLI, NUI", "NUI, GUI, CLI", "CLI, NUI, GUI"], 0, "CLI codificada, GUI metafórica, NUI directa e intuitiva."],
+["Sistemas operativos", "¿Qué interfaz es codificada y estricta?", ["CLI (línea de comandos)", "GUI", "NUI", "BIOS"], 0, "Hay que escribir órdenes exactas."],
+["Sistemas operativos", "¿Qué interfaz es metafórica y exploratoria?", ["GUI (gráfica)", "CLI", "NUI", "ROM"], 0, "Ventanas, iconos y menús."],
+["Sistemas operativos", "Verdadero o falso: Un sistema operativo debe tener siempre interfaz gráfica.", ["Verdadero", "Falso"], 1, "Puede funcionar solo con línea de comandos."],
+["Sistemas operativos", "¿Qué error común señala el resumen sobre los S.O.?", ["Llamar sistema operativo al conjunto de herramientas (explorador, navegador…)", "Confundirlo con la BIOS", "Pensar que es hardware", "Creer que ocupa memoria"], 0, "Ejemplo: Linux es el núcleo; las distribuciones lo incluyen."],
+["Sistemas operativos", "¿Qué es Linux frente a sus distribuciones?", ["El núcleo del sistema operativo", "Una aplicación ofimática", "Un tipo de interfaz", "Un periférico"], 0, "Las distribuciones lo empaquetan con herramientas."],
+["Firmware y arranque", "El firmware es software grabado en…", ["memorias ROM", "la RAM", "el disco duro", "los periféricos de salida"], 0, "No es fácilmente modificable."],
+["Firmware y arranque", "El software pregrabado de un móvil es un ejemplo de…", ["firmware", "software de aplicación", "software a medida", "documentación"], 0, "Está en componentes electrónicos."],
+["Firmware y arranque", "Tu ordenador pierde la hora cada vez que se apaga. ¿Qué es lo más probable?", ["La pila de la CMOS está agotada", "La RAM es volátil", "La BIOS está en la RAM", "El disco duro está lleno"], 0, "La CMOS guarda configuración, fecha y hora gracias a una pila."],
+["Firmware y arranque", "Quieres cambiar la fecha o añadir un disco en la BIOS. ¿Cómo entras al SETUP?", ["Pulsando F2 o Supr al arrancar", "Pulsando Ctrl+Alt+Supr al apagar", "Abriendo el explorador", "Desde el navegador"], 0, "Depende del equipo."],
+["Firmware y arranque", "¿Qué hace la BIOS al arrancar?", ["Localiza y carga el sistema operativo en la RAM", "Instala programas nuevos", "Borra la RAM", "Imprime el arranque"], 0, "También da las órdenes básicas al hardware y emite pitidos si hay fallos."],
+["Firmware y arranque", "La BIOS está grabada en una memoria…", ["ROM, no volátil", "RAM, volátil", "caché L1", "de vídeo"], 0, "Contiene la información del hardware del equipo."],
+["Firmware y arranque", "Ordena la evolución de la ROM de la BIOS.", ["ROM, PROM, EPROM", "EPROM, PROM, ROM", "PROM, ROM, EPROM", "ROM, EPROM, PROM"], 0, "ROM (solo fabricante), PROM (una vez), EPROM (reprogramable)."],
+["Firmware y arranque", "¿Qué memoria guarda la configuración básica y consume muy poca electricidad?", ["La CMOS", "La caché", "La SRAM", "La VRAM"], 0, "Se mantiene con una pila en la placa base."],
+["Componentes", "¿Qué dos unidades forman la UCP?", ["La UC y la UAL", "La RAM y la ROM", "La BIOS y la CMOS", "Los buses y los controladores"], 0, "Es «la parte pensante» del ordenador."],
+["Componentes", "¿Cuáles son los tres buses?", ["De datos, de direcciones y de control", "De entrada, de salida y de memoria", "De RAM, de ROM y de caché", "De lectura, de escritura y de reloj"], 0, "Conectan los componentes."],
+["Unidad de control", "¿Qué papel tiene la UC en el ordenador?", ["Director de orquesta: interpreta y envía órdenes", "Hace sumas y restas", "Almacena archivos", "Muestra imágenes"], 0, "Trae instrucciones y datos de la RAM y los ejecuta en orden."],
+["Unidad de control", "¿Qué guarda el registro de instrucción?", ["La instrucción que se está ejecutando", "La dirección de la siguiente", "El resultado de la operación", "La hora"], 0, "Es distinto del contador de programa."],
+["Unidad de control", "¿Qué guarda el registro contador de programa?", ["La dirección de memoria de la siguiente instrucción", "La instrucción actual", "Los resultados", "Las condiciones"], 0, "Actividad II a)."],
+["Unidad de control", "¿Qué elemento interpreta la instrucción y extrae el código de operación?", ["El controlador-decodificador", "El acumulador", "El reloj", "La UAL"], 0, "Actividad II b): la UAL solo hace operaciones."],
+["Unidad de control", "¿Qué genera las microórdenes necesarias?", ["El secuenciador", "El reloj", "El acumulador", "El registro de estado"], 0, "Forma parte de la UC."],
+["Unidad de control", "¿Qué produce el reloj?", ["Impulsos eléctricos a intervalos constantes", "Instrucciones", "Resultados aritméticos", "Direcciones de memoria"], 0, "Marca el ritmo de la CPU."],
+["Unidad de control", "Verdadero o falso: La unidad de control tiene memoria en forma de registros.", ["Verdadero", "Falso"], 0, "No es la RAM: son pequeños espacios de almacenamiento."],
+["Unidad aritmético-lógica", "¿Cuál NO es una operación aritmética de la UAL?", ["Comparar", "Sumar", "Restar", "Potenciación"], 0, "Comparar es una operación lógica."],
+["Unidad aritmético-lógica", "¿Qué operadores lógicos cita el resumen?", ["AND, OR y NOT", "SUM, RES y MUL", "IF, FOR y WHILE", "READ, WRITE y STOP"], 0, "También >, <, >= y NOT >."],
+["Unidad aritmético-lógica", "¿Qué elemento de la UAL guarda los resultados?", ["El acumulador", "El registro de estado", "El secuenciador", "El reloj"], 0, "Los registros de entrada contienen los operandos."],
+["Unidad aritmético-lógica", "¿Qué registra el registro de estado?", ["Las condiciones de la operación anterior", "La dirección siguiente", "La instrucción actual", "Los operandos"], 0, "Por ejemplo, si el resultado fue cero."],
+["Unidad aritmético-lógica", "¿Quién contiene los operandos antes de operar?", ["Los registros de entrada", "El acumulador", "El reloj", "La caché"], 0, "El circuito operacional hace la operación."],
+["Memoria", "La memoria externa (discos, pen drives…) es…", ["más lenta que la principal y no volátil", "más rápida y volátil", "más rápida y no volátil", "más lenta y volátil"], 0, "Tiene componentes electrónicos y mecánicos."],
+["Memoria", "La memoria interna (principal) está formada por…", ["RAM y ROM", "Discos y disquetes", "CMOS y caché L3", "VRAM y ZIP"], 0, "Está dentro de la carcasa."],
+["Memoria", "Antes de ejecutarse, un programa se carga en…", ["la RAM desde el almacenamiento externo", "la ROM", "la CMOS", "el monitor"], 0, "Es una operación de lectura."],
+["Memoria", "¿Por qué hay que refrescar la DRAM?", ["Porque sus condensadores se descargan con el tiempo", "Porque es no volátil", "Porque es de solo lectura", "Porque está en la BIOS"], 0, "Carga = 1, sin carga = 0."],
+["Memoria", "¿Cuántas celdillas forman un byte en la RAM?", ["8", "1", "4", "16"], 0, "Un byte representa un carácter."],
+["Memoria", "¿Qué RAM es cara y rápida, no necesita refresco y se usa como caché?", ["SRAM", "DRAM", "SDRAM", "DDRAM"], 0, "La DRAM es más lenta pero mucho más barata."],
+["Memoria", "¿Qué RAM es la que usan la mayoría de PCs?", ["SDRAM", "SRAM", "PROM", "VRAM"], 0, "Capacidad de la DRAM + velocidad de la SRAM."],
+["Memoria", "¿Qué hace la DDRAM?", ["Se refresca dos veces por impulso de reloj: casi el doble de rápida", "Se refresca una vez al día", "No necesita corriente", "Solo se lee"], 0, "Es «doble tasa»."],
+["Memoria", "Entre una memoria de 60 ns y otra de 100 ns, ¿cuál es más rápida?", ["La de 60 ns", "La de 100 ns", "Son iguales", "Depende del color"], 0, "Menor tiempo de acceso = más rápida."],
+["Memoria", "¿Qué memoria llevan las tarjetas gráficas?", ["VRAM o SGRAM", "CMOS", "PROM", "CDRAM"], 0, "Libera a la RAM del procesamiento gráfico."],
+["Memoria", "La CDRAM actúa como caché entre…", ["el procesador y el periférico (CD-ROM, E/S)", "la CPU y la RAM", "el teclado y el monitor", "la BIOS y la CMOS"], 0, "No confundir con la caché L1-L3."],
+["Memoria", "¿Qué pasa con la RAM al quitar la corriente?", ["Pierde la información", "La conserva", "Se copia a la ROM", "Se pasa a la CMOS"], 0, "Es volátil."],
+["Memoria", "¿Qué diferencia hay entre PROM y EPROM?", ["La PROM se programa una vez; la EPROM se puede reprogramar", "La EPROM es volátil", "La PROM es de lectura y escritura", "No hay diferencia"], 0, "Actividad IV a)."],
+["Memoria caché", "¿Dónde está la memoria caché?", ["Entre la RAM y el procesador", "Entre el monitor y la RAM", "En el disco duro", "En la BIOS"], 0, "No es RAM propiamente dicha."],
+["Memoria caché", "¿Cuál es la jerarquía de la más rápida a la más lenta?", ["CPU → L1 → L2 → L3 → RAM", "CPU → RAM → L1 → L2 → L3", "RAM → L3 → L2 → L1 → CPU", "L3 → L2 → L1 → CPU → RAM"], 0, "Cuanto más cerca de la CPU, más rápida."],
+["Memoria caché", "¿Para qué sirve la caché?", ["Guarda las instrucciones más usadas y mejora el rendimiento", "Guarda la BIOS", "Guarda archivos permanentemente", "Refresca la RAM"], 0, "El procesador accede a ellas de inmediato."],
+["Estructura de memoria", "¿Qué rango tiene la memoria convencional?", ["De 0 a 640 KB", "De 641 a 1024 KB", "Desde 1025 KB", "De 0 a 1 GB"], 0, "Primer nivel de la estructura de memoria."],
+["Estructura de memoria", "¿Qué rango tiene la memoria superior?", ["De 641 KB a 1024 KB", "De 0 a 640 KB", "Desde 1025 KB", "De 0 a 64 KB"], 0, "Llega hasta 1 MB."],
+["Estructura de memoria", "¿Hasta dónde llega la memoria extendida?", ["Hasta el límite de la placa base", "Hasta 640 KB", "Hasta 1 MB", "No tiene límite"], 0, "Empieza en 1025 KB."],
+["Direcciones", "¿Qué es una dirección de memoria?", ["La situación de una celdilla dentro de la memoria", "Un tipo de IP", "Una instrucción", "Un programa"], 0, "Se accede a conjuntos de 8 bits."],
+["Direcciones", "¿De qué se compone una instrucción?", ["Código de operación y operando", "Dirección y bus", "Entrada y salida", "BIOS y CMOS"], 0, "Código de operación (suma, resta…) + operando (el dato)."],
+["Direccionamiento", "El dato está en la propia instrucción. ¿Qué direccionamiento es?", ["Inmediato", "Directo", "Indirecto", "Relativo"], 0, "No hace falta ir a memoria a buscarlo."],
+["Direccionamiento", "La instrucción contiene la dirección donde está el dato. ¿Qué direccionamiento es?", ["Directo", "Inmediato", "Indirecto", "Relativo"], 0, "Es el de los ejemplos de las diapositivas."],
+["Direccionamiento", "La instrucción apunta a una dirección que contiene la dirección efectiva del dato. ¿Cuál es?", ["Indirecto", "Directo", "Inmediato", "Relativo"], 0, "Hay un salto extra."],
+["Direccionamiento", "Se suma una cantidad fija a la dirección de la propia instrucción. ¿Cuál es?", ["Relativo", "Inmediato", "Directo", "Indirecto"], 0, "Se usa un registro especial."],
+["Direccionamiento", "SUMA 56 con un 8 en la posición 56 y el acumulador en 8. ¿Qué resultado se guarda?", ["16 en la posición 56", "8 en la posición 56", "16 en la posición 8", "64 en la posición 56"], 0, "8 + 8 = 16, y se guarda en 56."],
+["Direccionamiento", "En RESTA 32 12 45, ¿qué se hace?", ["Se resta el contenido de la 32 menos el de la 12 y se deja en la 45", "Se resta 12 − 32 y se deja en la 32", "Se suman las posiciones 32 y 12", "Se guarda 45 en la 12"], 0, "Es direccionamiento directo."],
+["Direccionamiento", "Con direccionamiento relativo, una instrucción en la dirección 100 con desplazamiento 5 accede a…", ["la dirección 105", "la dirección 5", "la dirección 95", "la dirección 500"], 0, "100 + 5 = 105."],
+["Sistemas operativos: generaciones", "¿Qué tecnología tuvo la 1ª generación (1945-55)?", ["Tubos de vacío", "Transistores", "Circuitos integrados", "VLSI"], 0, "Se programaba en lenguaje máquina con tarjetas perforadas."],
+["Sistemas operativos: generaciones", "¿Qué cifras tenía el ENIAC?", ["20.000 tubos, 27 toneladas y 167 m²", "2.400 tubos y 1 tonelada", "1 millón de transistores", "128 KB de memoria"], 0, "Mauchly y Eckert, 1946; 150 kW y 100 kHz."],
+["Sistemas operativos: generaciones", "¿Para qué se usó el Colossus de Turing en Bletchley Park?", ["Para descifrar el cripto Lorenz", "Para calcular trayectorias", "Para jugar al ajedrez", "Para gestionar nóminas"], 0, "Tenía 2.400 tubos (1944)."],
+["Sistemas operativos: generaciones", "En la 2ª generación (1955-65) aparecen…", ["transistores y sistemas batch", "tubos de vacío", "circuitos integrados", "microprocesadores"], 0, "Los mainframes ejecutaban jobs con tarjetas perforadas."],
+["Sistemas operativos: generaciones", "¿Quién creó FORTRAN y dónde?", ["John Backus, en IBM (1953)", "Alan Turing, en Bletchley Park", "Steve Jobs, en Apple", "Intel, en 1974"], 0, "Es un lenguaje que necesita compilador."],
+["Sistemas operativos: generaciones", "¿Qué es un mainframe?", ["Un ordenador muy caro para grandes empresas, gobiernos y universidades", "Un ordenador de mano", "Un PC doméstico", "Una consola"], 0, "Característico de la 2ª generación."],
+["Sistemas operativos: generaciones", "En la 3ª generación (1965-80) aparecen…", ["circuitos integrados y multiprogramación", "transistores y batch", "tubos de vacío", "VLSI y PC"], 0, "IBM System/360 y su S.O. OS/360."],
+["Sistemas operativos: generaciones", "¿Qué era el OS/360?", ["El S.O. de IBM System/360: enorme, complejo y con muchos bugs", "Un lenguaje de programación", "Un microprocesador", "Una impresora"], 0, "Fue la familia de hardware compatible de IBM."],
+["Sistemas operativos: generaciones", "¿Qué caracteriza la 4ª generación (1980-hoy)?", ["Computadores personales y tecnología VLSI", "Tubos de vacío", "Tarjetas perforadas", "Solo mainframes"], 0, "Hasta 1 millón de transistores en 1 cm²."],
+["Sistemas operativos: generaciones", "¿Qué microprocesador presentó Intel en 1974 y forma parte del Altair 8800?", ["El Intel 8080 (8 bits, 2 MHz)", "El Intel 4004", "El Intel 8086", "El Pentium"], 0, "Intel 4004 fue a principios de los 70."],
+["Software", "¿Un programa es un conjunto de instrucciones y una aplicación se compone de varios programas?", ["Sí, las dos afirmaciones son ciertas", "Solo la primera", "Solo la segunda", "Ninguna"], 0, "Actividades I a) y b)."]
+];
+const $=id=>document.getElementById(id);
+const GROUPS=[
+["Fundamentos","#9b8cff","🧭",["Conceptos básicos","Historia","Hardware y software","Tipos de ordenadores"]],
+["Periféricos","#ff8fab","🖨️",["Periféricos","Almacenamiento"]],
+["Datos","#ffc857","🔢",["Datos y unidades","Binario","Direcciones IP","ASCII"]],
+["Software","#4fd6a0","🧩",["Software","Sistemas operativos","Firmware y arranque","Sistemas operativos: generaciones"]],
+["Hardware interno","#5cc8ff","🧠",["Componentes","Unidad de control","Unidad aritmético-lógica","Memoria","Memoria caché","Estructura de memoria","Direcciones","Direccionamiento"]]];
+const TG={};GROUPS.forEach(g=>g[3].forEach(t=>TG[t]=g));
+const topics=[...new Set(BANK.map(q=>q[0]))];
+const col=t=>(TG[t]||GROUPS[0])[1],emo=t=>(TG[t]||GROUPS[0])[2];
+function paint(el,t){el.textContent=emo(t)+" "+t;el.style.setProperty("--c",col(t))}
+let queue=[],index=0,sessionCorrect=0,sessionWrong=[],answered=false,streak=0,currentOptions=[],lastQueue=[],timerInterval=null,timeRemaining=1800,isExam=false,currentModeName="",setupMode="topic",studyItems=[],studyIndex=0,revealed=false;
+const EMPTY=()=>({questions:{},totalAnswered:0,totalCorrect:0,exams:0});
+let saved=load();
+function load(){try{return JSON.parse(localStorage.getItem("sistemasU1Progress_v2"))||EMPTY()}catch{return EMPTY()}}
+function save(){try{localStorage.setItem("sistemasU1Progress_v2",JSON.stringify(saved))}catch{}header()}
+function qs(i){return saved.questions[i]||(saved.questions[i]={seen:0,correct:0,wrong:0,last:0})}
+function header(){$("bankCount").textContent=BANK.length;$("totalCorrect").textContent=saved.totalCorrect;$("overallAccuracy").textContent=saved.totalAnswered?Math.round(saved.totalCorrect/saved.totalAnswered*100)+"%":"—"}
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const all=()=>BANK.map((q,i)=>({q,i}));
+function hideAll(){["home","study","setup","quiz","results","progress"].forEach(id=>$(id).classList.add("hide"))}
+function show(id){hideAll();$(id).classList.remove("hide");scrollTo(0,0)}
+function showHome(){stopTimer();show("home");header()}
+/* bits */
+let bits=[0,1,0,1,0,0,1,1];
+function drawBits(){const w=[128,64,32,16,8,4,2,1];$("bitrow").innerHTML="";bits.forEach((b,i)=>{const el=document.createElement("button");el.className="bit"+(b?" on":"");el.setAttribute("aria-label","Bit de valor "+w[i]);el.innerHTML="<small>"+w[i]+"</small><span>"+b+"</span>";el.onclick=()=>{bits[i]^=1;drawBits()};$("bitrow").appendChild(el)});
+const n=bits.reduce((s,b,i)=>s+b*w[i],0);$("bitout").innerHTML="= <b>"+n+"</b> en decimal"+(n>=32&&n<127?" · ASCII «"+String.fromCharCode(n)+"»":"")}
+/* quiz */
+function startQueue(items,name,exam=false){
+if(!items.length){alert("No hay preguntas disponibles para esta práctica.");return}
+stopTimer();queue=items.map(x=>({q:x.q,i:x.i}));lastQueue=[...queue];index=0;sessionCorrect=0;sessionWrong=[];answered=false;streak=0;isExam=exam;currentModeName=name;
+show("quiz");$("quizMode").textContent=name;$("timer").classList.toggle("hide",!exam);
+if(exam){timeRemaining=1800;tick();timerInterval=setInterval(()=>{timeRemaining--;tick();if(timeRemaining<=0){stopTimer();finishQuiz(true)}},1000)}
+renderQuestion()}
+function tick(){const t=$("timer");t.textContent=String(timeRemaining/60|0).padStart(2,"0")+":"+String(timeRemaining%60).padStart(2,"0");t.classList.toggle("warn",timeRemaining<=300)}
+function stopTimer(){clearInterval(timerInterval);timerInterval=null}
+function renderQuestion(){answered=false;const q=queue[index].q;paint($("quizTopic"),q[0]);$("quiz").style.setProperty("--c",col(q[0]));
+$("quizCounter").textContent="Pregunta "+(index+1)+" de "+queue.length;$("streak").textContent=streak>=2?"🔥 Racha de "+streak:"";
+$("quizProgress").style.width=index/queue.length*100+"%";$("quizQuestion").textContent=q[1];
+$("quizFeedback").className="feedback";$("quizHint").textContent="Elige una respuesta";$("quizNext").disabled=true;$("quizNext").textContent="Siguiente";
+currentOptions=shuffle(q[2].map((text,k)=>({text,correct:k===q[3]})));const box=$("quizAnswers");box.innerHTML="";
+currentOptions.forEach((o,i)=>{const b=document.createElement("button");b.className="answer";b.innerHTML='<span class="l">'+"ABCD"[i]+"</span>";b.append(o.text);b.onclick=()=>choose(i);box.appendChild(b)})}
+function choose(k){if(answered)return;answered=true;const item=queue[index],q=item.q,sel=currentOptions[k],ok=currentOptions.findIndex(o=>o.correct);
+[...$("quizAnswers").children].forEach((b,i)=>{b.disabled=true;if(i===ok)b.classList.add("correct");if(i===k&&!sel.correct)b.classList.add("wrong")});
+const s=qs(item.i);s.seen++;s.last=Date.now();saved.totalAnswered++;const f=$("quizFeedback");
+if(sel.correct){sessionCorrect++;saved.totalCorrect++;s.correct++;streak++;f.className="feedback good";f.textContent="¡Correcto! "+q[4];$("quizHint").textContent=streak>=2?"🔥 Racha de "+streak:"Bien hecho"}
+else{s.wrong++;streak=0;sessionWrong.push(item);f.className="feedback bad";f.textContent="No era esa. Correcta: "+q[2][q[3]]+". "+q[4];$("quizHint").textContent="Lee la explicación"}
+save();$("quizNext").disabled=false;if(index===queue.length-1)$("quizNext").textContent="Ver resultados"}
+function nextQuestion(){if(!answered)return;if(index<queue.length-1){index++;renderQuestion()}else finishQuiz(false)}
+function finishQuiz(expired){stopTimer();show("results");const total=queue.length,c=sessionCorrect,pct=Math.round(c/total*100),grade=(c/total*10).toFixed(1);
+$("ring").style.setProperty("--p",pct);$("resultScore").textContent=isExam?grade:c+"/"+total;
+$("resultTitle").textContent=expired?"Se acabó el tiempo":isExam?"Examen terminado":"Práctica completada";
+$("resultText").textContent=expired?"Este es tu resultado hasta ahora.":pct>=90?"Excelente: dominas estos contenidos.":pct>=70?"Buen trabajo. Repasa los fallos para pulirlo.":pct>=50?"Vas avanzando. Revisa los temas que más te cuestan.":"Conviene estudiar estos contenidos otra vez antes de repetir.";
+$("resultCorrect").textContent=c;$("resultWrong").textContent=total-c;$("resultPercent").textContent=pct+"%";$("resultGrade").textContent=grade;$("gradeMetric").classList.toggle("hide",!isExam);
+if(isExam){saved.exams++;save()}
+const r=$("resultReview");r.innerHTML="<h3>Revisión de fallos</h3>";
+if(!sessionWrong.length)r.innerHTML+='<p class="muted">¡No has fallado ninguna!</p>';
+sessionWrong.forEach((it,n)=>{const d=document.createElement("div");d.className="rev";d.style.borderLeft="4px solid "+col(it.q[0]);d.innerHTML="<b></b><p></p><p class='muted'></p>";d.children[0].textContent=(n+1)+". "+it.q[1];d.children[1].textContent="Correcta: "+it.q[2][it.q[3]];d.children[2].textContent=it.q[4];r.appendChild(d)})}
+function confirmExit(){if(confirm("¿Salir? Se perderá el resultado de esta práctica.")){stopTimer();showHome()}}
+function repeatLast(){lastQueue.length?startQueue(shuffle(lastQueue),currentModeName,isExam):showHome()}
+/* modos */
+function startQuick(n){startQueue(shuffle(all()).slice(0,n),"Repaso rápido de "+n)}
+function startMistakes(){const it=all().filter(x=>qs(x.i).wrong>0);if(!it.length){alert("Aún no tienes errores guardados. Haz una práctica primero.");return}startQueue(shuffle(it),"Repaso de errores")}
+function startSmartReview(){const sc=x=>{const s=qs(x.i);return s.seen?s.wrong/s.seen*100:100};startQueue(all().sort((a,b)=>sc(b)-sc(a)||qs(a.i).last-qs(b.i).last).slice(0,15),"Repaso inteligente")}
+function startDefinitions(){startQueue(shuffle(all()).slice(0,15),"Repaso de conceptos")}
+function startFinalExam(){startQueue(shuffle(all()).slice(0,30),"Examen final",true)}
+/* configurar */
+function checks(){const c=$("topicChecks");c.innerHTML="";topics.forEach(t=>{const l=document.createElement("label");l.className="check";l.style.setProperty("--c",col(t));l.innerHTML='<input type="checkbox" checked>';l.firstChild.value=t;l.firstChild.onchange=info;l.append(emo(t)+" "+t);c.appendChild(l)});info()}
+function setup(mode,title,desc,n){setupMode=mode;$("setupTitle").textContent=title;$("setupDescription").textContent=desc;$("customCount").value=n;checks();show("setup")}
+function openTopicPractice(){setup("topic","Práctica por temas","Elige uno o varios temas y cuántas preguntas quieres.","10")}
+function openCustomExam(){setup("custom","Simulacro personalizado","Elige temas y número de preguntas. Todas son tipo test.","20")}
+function toggleTopics(v){document.querySelectorAll("#topicChecks input").forEach(i=>i.checked=v);info()}
+const chosen=()=>[...document.querySelectorAll("#topicChecks input:checked")].map(i=>i.value);
+function info(){const s=chosen();$("selectedInfo").textContent=s.length+" temas, "+BANK.filter(q=>s.includes(q[0])).length+" preguntas disponibles"}
+function launchCustom(){const s=chosen();if(!s.length){alert("Selecciona al menos un tema.");return}let it=shuffle(all().filter(x=>s.includes(x.q[0])));const n=$("customCount").value;if(n!=="all")it=it.slice(0,+n);startQueue(it,setupMode==="custom"?"Simulacro personalizado":"Práctica por temas")}
+/* estudio */
+function openStudy(){const sel=$("studyTopic");sel.innerHTML="";topics.forEach(t=>{const o=document.createElement("option");o.value=t;o.textContent=emo(t)+" "+t;sel.appendChild(o)});show("study");changeStudyTopic()}
+function changeStudyTopic(){studyItems=all().filter(x=>x.q[0]===$("studyTopic").value);studyIndex=0;card()}
+function card(){const q=studyItems[studyIndex].q;revealed=false;$("study").style.setProperty("--c",col(q[0]));paint($("studyTag"),q[0]);$("studyQuestion").textContent=q[1];$("studyAnswer").textContent=q[2][q[3]];$("studyExplanation").textContent=q[4];
+$("studyPosition").textContent=(studyIndex+1)+" de "+studyItems.length;$("studyProgress").style.width=(studyIndex+1)/studyItems.length*100+"%";$("studyCard").classList.add("hide");$("studyGhost").classList.remove("hide")}
+function reveal(){revealed=true;$("studyCard").classList.remove("hide");$("studyGhost").classList.add("hide")}
+function studyPrev(){if(studyIndex>0){studyIndex--;card()}}
+function studyNext(){studyIndex=studyIndex<studyItems.length-1?studyIndex+1:0;card()}
+function practiceStudyTopic(){startQueue(shuffle(all().filter(x=>x.q[0]===$("studyTopic").value)),"Práctica: "+$("studyTopic").value)}
+/* progreso */
+function openProgress(){show("progress");const a=saved.totalAnswered,c=saved.totalCorrect;$("statAnswered").textContent=a;$("statCorrect").textContent=c;$("statAccuracy").textContent=a?Math.round(c/a*100)+"%":"0%";
+let mastered=0;const box=$("topicProgress");box.innerHTML="";
+topics.forEach(t=>{let seen=0,ok=0;all().filter(x=>x.q[0]===t).forEach(x=>{const s=qs(x.i);seen+=s.seen;ok+=s.correct});const acc=seen?Math.round(ok/seen*100):0;if(seen>=3&&acc>=80)mastered++;
+const r=document.createElement("div");r.className="stat";r.style.setProperty("--c",col(t));r.innerHTML='<div class="row"><b></b><span class="small"></span></div><div class="bar"><div></div></div>';
+r.querySelector("b").textContent=emo(t)+" "+t;r.querySelector("span").textContent=seen?acc+"% de "+seen+" respuestas":"Sin practicar";r.querySelector(".bar div").style.width=acc+"%";box.appendChild(r)});
+$("statMastered").textContent=mastered;const p=$("pendingReview");p.innerHTML="";const er=all().filter(x=>qs(x.i).wrong>0).sort((a,b)=>qs(b.i).wrong-qs(a.i).wrong);
+if(!er.length)p.textContent="Aún no has fallado ninguna. ¡Sigue practicando!";
+er.slice(0,15).forEach(x=>{const d=document.createElement("div");d.className="rev";d.style.borderLeft="4px solid "+col(x.q[0]);d.innerHTML="<b></b><p class='muted'></p>";d.children[0].textContent=x.q[1];d.children[1].textContent=x.q[0]+": fallada "+qs(x.i).wrong+(qs(x.i).wrong===1?" vez":" veces");p.appendChild(d)})}
+function resetProgress(){if(!confirm("¿Seguro que quieres borrar todas tus estadísticas y errores?"))return;saved=EMPTY();save();openProgress()}
+/* teclado */
+addEventListener("keydown",e=>{if(e.ctrlKey||e.metaKey||e.altKey||/SELECT|INPUT/.test(e.target.tagName))return;const k=e.key.toLowerCase();
+if(!$("quiz").classList.contains("hide")){const i="1234".indexOf(k),j="abcd".indexOf(k),n=i>=0?i:j;if(n>=0&&n<currentOptions.length)choose(n);else if((k==="enter"||k==="arrowright")&&answered){e.preventDefault();nextQuestion()}}
+else if(!$("study").classList.contains("hide")){if(k==="arrowright")studyNext();else if(k==="arrowleft")studyPrev();else if(k===" "){e.preventDefault();revealed?studyNext():reveal()}}});
+$("studyTopic").addEventListener("change",changeStudyTopic);
+$("map").innerHTML=GROUPS.map(g=>g[3].map(t=>'<span class="chip" style="--c:'+g[1]+'">'+g[2]+" "+t+"</span>").join("")).join("");
+drawBits();header();
+/* intro */
+(function(){const el=$("intro"),box=$("inName"),cv=$("rain"),name="Maximo.H",t0=Date.now();let closed=false,raf=0;
+[...name].forEach((c,i)=>{const b=c.charCodeAt(0).toString(2).padStart(8,"0"),s=document.createElement("span");s.className="L";s.style.setProperty("--i",i);s.innerHTML='<span class="b">'+b.slice(0,4)+"\n"+b.slice(4)+'</span><span class="g"></span>';s.lastChild.textContent=c;box.appendChild(s)});
+const x=cv.getContext("2d"),fs=18;let W,H,cols,col,prev=performance.now();
+const size=()=>{const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;x.setTransform(d,0,0,d,0,0);cols=Math.ceil(W/fs);col=Array.from({length:cols},()=>({y:-Math.random()*H,v:90+Math.random()*190,r:-1}))};size();addEventListener("resize",size);
+const draw=now=>{raf=requestAnimationFrame(draw);const dt=Math.min(.05,(now-prev)/1000);prev=now;x.fillStyle="rgba(18,15,33,.11)";x.fillRect(0,0,W,H);x.font="700 "+fs+"px ui-monospace,Consolas,monospace";
+for(let i=0;i<cols;i++){const k=col[i];k.y+=k.v*dt;const r=Math.floor(k.y/fs);if(r!==k.r){k.r=r;x.fillStyle=Math.random()<.05?"#ffc857":i%3?"#7b6cf0":"#45b0dc";x.fillText(Math.random()<.5?"0":"1",i*fs,r*fs)}if(k.y>H+fs*6&&Math.random()<.03){k.y=-fs*Math.random()*10;k.r=-1}}};raf=requestAnimationFrame(draw);
+const skip=()=>{if(Date.now()-t0>700)close()};
+function close(){if(closed)return;closed=true;removeEventListener("keydown",skip);removeEventListener("resize",size);el.classList.add("out");setTimeout(()=>{cancelAnimationFrame(raf);el.remove()},1000)}
+setTimeout(close,5200);el.addEventListener("click",skip);addEventListener("keydown",skip);
+})();
+</script>
+</body>
+</html>

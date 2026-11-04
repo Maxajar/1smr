@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Conversor de sistemas numéricos</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0b1220;color:#edf3ff;font-family:Arial,sans-serif}
+header{text-align:center;padding:30px 15px;background:#172747}
+header h1{margin:0;font-size:29px}
+header p{color:#b7c6df}
+main{max-width:850px;margin:auto;padding:20px}
+h2{font-size:21px;margin-top:0}
+.panel{background:#172238;border:1px solid #30415f;border-radius:13px;padding:20px;margin-bottom:17px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+button{padding:13px;border:0;border-radius:9px;background:#79aaff;color:#071326;font-weight:bold;cursor:pointer}
+button:hover{filter:brightness(1.12)}
+.mode{background:#243653;color:#fff;border:1px solid #405577}
+.mode.active{background:#79aaff;color:#071326}
+label{display:block;color:#b8c7df;margin:12px 0 6px}
+input,select{width:100%;padding:13px;background:#0b1425;color:#fff;border:1px solid #405577;border-radius:8px;font-size:16px}
+.bigresult{font-size:29px;color:#6ee7b7;font-weight:bold;overflow-wrap:anywhere;margin-top:8px}
+.step{background:#0b1425;border-left:3px solid #79aaff;padding:14px;margin:10px 0;border-radius:7px}
+.step h3{color:#79aaff;margin:0 0 9px;font-size:16px}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.7;color:#e0eaff;margin:0}
+.hidden{display:none}
+.error{color:#ff8b9e}
+.small{font-size:13px;color:#aabbd4}
+.scroll{overflow-x:auto;padding-bottom:6px}
+.stair{display:grid;font-family:ui-monospace,Consolas,monospace;font-size:20px;width:max-content;margin:8px 0}
+.cell{display:flex;justify-content:flex-end;min-height:2.1em}
+.n{padding:2px 8px;display:flex;align-items:center}
+.dv{border-left:2px solid #79aaff;border-bottom:2px solid #79aaff;padding:2px 12px;min-width:2.6ch;display:flex;align-items:center;justify-content:center}
+.dv.ghost{visibility:hidden}
+.r,.lead{color:#6ee7b7;font-weight:bold}
+.lead{text-decoration:underline}
+.arrow{color:#ffd479;font-size:14px;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+<h1>Conversor de sistemas numéricos</h1>
+<p>SMR · Binario, decimal, octal y hexadecimal</p>
+</header>
+<main>
+
+<section class="panel">
+<h2>¿Qué quieres convertir?</h2>
+<div class="modes">
+<button class="mode active" data-from="10" data-to="2" aria-pressed="true">Decimal → Binario</button>
+<button class="mode" data-from="2" data-to="10">Binario → Decimal</button>
+<button class="mode" data-from="10" data-to="16">Decimal → Hexadecimal</button>
+<button class="mode" data-from="16" data-to="10">Hexadecimal → Decimal</button>
+<button class="mode" data-from="10" data-to="8">Decimal → Octal</button>
+<button class="mode" data-from="8" data-to="10">Octal → Decimal</button>
+<button class="mode" data-from="2" data-to="8">Binario → Octal</button>
+<button class="mode" data-from="8" data-to="2">Octal → Binario</button>
+<button class="mode" data-from="2" data-to="16">Binario → Hexadecimal</button>
+<button class="mode" data-from="16" data-to="2">Hexadecimal → Binario</button>
+</div>
+</section>
+
+<section class="panel">
+<h2>Introduce el número</h2>
+<label for="number">Número que quieres convertir</label>
+<input id="number" value="147" placeholder="Escribe aquí..." autocomplete="off" spellcheck="false">
+<div id="advanced" class="hidden">
+<label for="from">Base de origen</label><select id="from"></select>
+<label for="to">Base de destino</label><select id="to"></select>
+</div>
+<br>
+<button id="go" style="width:100%">CONVERTIR</button>
+<p id="error" class="error" role="alert"></p>
+</section>
+
+<section class="panel">
+<h2>Resultado</h2>
+<div id="result" class="bigresult" aria-live="polite"></div>
+<p id="resultLabel" class="small"></p>
+<p id="note" class="small" style="color:#ffd479"></p>
+<button id="copy" class="mode">Copiar resultado</button>
+</section>
+
+<section class="panel">
+<h2>Procedimiento paso a paso</h2>
+<div id="steps"></div>
+</section>
+
+<section class="panel">
+<h2>¿Quieres convertir otras bases?</h2>
+<button class="mode" id="advancedButton" style="width:100%">Abrir conversor avanzado (bases 2 a 36)</button>
+</section>
+
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const DIGITS="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const DEF={10:"147",2:"10010011",8:"223",16:"93"};
+let baseA=10,baseB=2,lastResult="";
+
+for(let b=2;b<=36;b++)for(const id of ["from","to"]){
+ const o=document.createElement("option");o.value=b;o.textContent="Base "+b;$(id).append(o);
+}
+$("from").value=10;$("to").value=2;
+
+// Lee el número con BigInt: parte entera y fracción exactas (num/den)
+function parse(s,b){
+ s=s.trim().toUpperCase().replace(",",".");
+ if(s.length>200)throw Error("Número demasiado largo (máximo 200 cifras).");
+ let neg=false;
+ if(s[0]==="-"){neg=true;s=s.slice(1)}
+ const parts=s.split(".");
+ if(parts.length>2||!(parts[0]||parts[1]))throw Error("Introduce un número válido.");
+ const B=BigInt(b);let whole=0n,num=0n,den=1n;
+ const dig=c=>{const d=DIGITS.indexOf(c);if(d<0||d>=b)throw Error(`Dígito no válido para base ${b}: ${c}`);return BigInt(d)};
+ for(const c of parts[0])whole=whole*B+dig(c);
+ for(const c of parts[1]||""){num=num*B+dig(c);den*=B}
+ return {neg,whole,num,den,w:parts[0]||"0",f:parts[1]||""};
+}
+
+// Una única función calcula resultado y pasos, así siempre coinciden
+function toBase(p,b){
+ const B=BigInt(b),st=[];let x=p.whole;
+ while(x>=B){st.push({x,r:x%B});x=x/B}
+ const w=DIGITS[Number(x)]+st.map(s=>DIGITS[Number(s.r)]).reverse().join("");
+ let num=p.num;const fs=[];
+ while(num>0n&&fs.length<12){const t=num*B,d=t/p.den;fs.push({num,t,d});num=t%p.den}
+ const f=fs.map(s=>DIGITS[Number(s.d)]).join("");
+ const zero=p.whole===0n&&p.num===0n;
+ return {st,lead:x,fs,f,w,den:p.den,trunc:num>0n,text:(p.neg&&!zero?"-":"")+w+(f?"."+f:"")};
+}
+
+function block(title,content){
+ const d=document.createElement("div");d.className="step";
+ const h=document.createElement("h3");h.textContent=title;d.append(h);
+ if(typeof content==="string"){const pre=document.createElement("pre");pre.textContent=content;d.append(pre)}
+ else d.append(content);
+ $("steps").append(d);
+}
+
+// Divisiones en escalera
+function stair(r,b){
+ const m=r.st.length,g=document.createElement("div");
+ g.className="stair";g.style.gridTemplateColumns=`repeat(${m+1},auto)`;
+ const add=(row,col,txt,cls,div,ghost)=>{
+  const c=document.createElement("div");c.className="cell";c.style.gridArea=`${row+1}/${col+1}`;
+  const n=document.createElement("span");n.className="n "+cls;n.textContent=txt;c.append(n);
+  if(div){const d=document.createElement("span");d.className="dv"+(ghost?" ghost":"");d.textContent=b;c.append(d)}
+  g.append(c);
+ };
+ r.st.forEach((s,i)=>{add(i,i,String(s.x),"",true);add(i+1,i,String(s.r),"r",true,true)});
+ add(m,m,String(r.lead),"lead",false);
+ return g;
+}
+
+function grouping(p,a,b){
+ const k=Math.log2(Math.max(a,b)),L=[];
+ if(a===2){
+  const pad=(s,left)=>{const n=(k-s.length%k)%k;return left?"0".repeat(n)+s:s+"0".repeat(n)};
+  const m=s=>(s.match(new RegExp(`.{${k}}`,"g"))||[]).map(c=>`${c} → ${DIGITS[parseInt(c,2)]}`);
+  L.push(`Se agrupan los bits de ${k} en ${k} (desde la coma):`,...m(pad(p.w,true)));
+  if(p.f)L.push("Parte fraccionaria (de izquierda a derecha):",...m(pad(p.f,false)));
+ }else{
+  const e=s=>[...s].map(c=>`${c} → ${DIGITS.indexOf(c).toString(2).padStart(k,"0")}`);
+  L.push(`Cada cifra se expande a ${k} bits:`,...e(p.w));
+  if(p.f)L.push("Parte fraccionaria:",...e(p.f));
+ }
+ return L.join("\n");
+}
+
+function calculate(){
+ try{
+  $("error").textContent="";$("note").textContent="";
+  let a=baseA,b=baseB;
+  if(!$("advanced").classList.contains("hidden")){a=Number($("from").value);b=Number($("to").value)}
+  const raw=$("number").value.trim(),p=parse(raw,a),r=toBase(p,b),d=toBase(p,10);
+  lastResult=r.text;
+  $("result").textContent=r.text;
+  $("resultLabel").textContent=`${raw} (base ${a}) = ${r.text} (base ${b})`;
+  if(r.trunc)$("note").textContent="Resultado aproximado: la parte fraccionaria no termina en esta base y se ha truncado a 12 cifras.";
+  $("steps").innerHTML="";
+  let n=1;
+
+  const L=[];
+  [...p.w].forEach((c,i)=>{const e=p.w.length-1-i;L.push(`${c} × ${a}^${e} = ${BigInt(DIGITS.indexOf(c))*BigInt(a)**BigInt(e)}`)});
+  [...p.f].forEach((c,i)=>L.push(`${c} × ${a}^(-${i+1}) = ${DIGITS.indexOf(c)}/${BigInt(a)**BigInt(i+1)}`));
+  block(`${n++}. Teorema Fundamental de la Numeración (TFN)`,
+   L.join("\n")+`\n\nSuma = ${d.text.replace("-","")}${d.trunc?" (aprox.)":""} en decimal${p.neg?"  →  el número es negativo: -"+d.text.replace("-",""):""}`);
+
+  if(b!==10){
+   const w=document.createElement("div");
+   if(r.st.length){
+    const sc=document.createElement("div");sc.className="scroll";sc.append(stair(r,b));w.append(sc);
+    const ar=document.createElement("div");ar.className="arrow";
+    ar.textContent=`↖ Sentido de formación del nº en base ${b}: el último cociente y los restos de abajo arriba → ${r.w}`;
+    w.append(ar);
+    if(b>10){const lg=document.createElement("div");lg.className="small";
+     lg.textContent="Equivalencias: "+[...DIGITS.slice(10,b)].map((c,i)=>`${i+10}=${c}`).join(", ");w.append(lg)}
+   }else{w.textContent=`${p.whole} < ${b}: ya es una sola cifra, no hay que dividir.`}
+   block(`${n++}. Divisiones sucesivas de la parte entera (${p.whole} ÷ ${b})`,w);
+   if(r.fs.length){
+    block(`${n++}. Parte fraccionaria: multiplicaciones sucesivas`,
+     r.fs.map(s=>`${s.num}/${r.den} × ${b} = ${s.t}/${r.den} → cifra ${DIGITS[Number(s.d)]}`).join("\n")+
+     `\n\nSe leen las cifras de arriba abajo: ${r.f}${r.trunc?"…":""}`);
+   }
+  }
+  if((a===2&&(b===8||b===16))||(b===2&&(a===8||a===16)))
+   block(`${n++}. Método por agrupación`,grouping(p,a,b));
+  block(`${n++}. Resultado final`,`${raw} (base ${a}) = ${r.text} (base ${b})`);
+ }catch(e){
+  $("error").textContent=e.message;$("result").textContent="—";$("resultLabel").textContent="";$("steps").innerHTML="";lastResult="";
+ }
+}
+
+document.querySelectorAll(".modes .mode").forEach(btn=>btn.addEventListener("click",()=>{
+ document.querySelectorAll(".modes .mode").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-pressed","false")});
+ btn.classList.add("active");btn.setAttribute("aria-pressed","true");
+ $("advanced").classList.add("hidden");
+ baseA=Number(btn.dataset.from);baseB=Number(btn.dataset.to);
+ $("number").value=DEF[baseA];
+ calculate();
+}));
+
+$("advancedButton").addEventListener("click",()=>{
+ $("advanced").classList.remove("hidden");
+ document.querySelectorAll(".modes .mode").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-pressed","false")});
+ $("from").value=10;$("to").value=2;$("number").value="147";
+ calculate();
+});
+$("from").addEventListener("change",calculate);
+$("to").addEventListener("change",calculate);
+$("go").addEventListener("click",calculate);
+$("number").addEventListener("keydown",e=>{if(e.key==="Enter")calculate()});
+$("copy").addEventListener("click",async()=>{
+ try{await navigator.clipboard.writeText(lastResult);$("copy").textContent="¡Copiado!"}
+ catch{$("copy").textContent="No se pudo copiar"}
+ setTimeout(()=>$("copy").textContent="Copiar resultado",1400);
+});
+
+calculate();
+</script>
+</body>
+</html>
